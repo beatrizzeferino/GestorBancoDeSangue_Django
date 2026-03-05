@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerir Estado do Dador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'error' %}
+                        <i class="fas fa-ban"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-toggle-on"></i>
+                </div>
+                <div>
+                    <h2>Gerir Estado</h2>
+                    <h3>Ativar ou Desativar Contas</h3>
+                </div>
+            </div>
+            
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'menu_outros' %}{% else %}{% url 'home_posto' %}{% endif %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="glass-panel state-widget fade-in-up">
+            
+            <div class="widget-visual">
+                <div class="icon-circle">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="visual-text">
+                    <h3>Alteração de Estado</h3>
+                    <p>
+                        Insira o NIF ou ID para inverter o estado do dador (Ativo <i class="fas fa-exchange-alt"></i> Inativo).
+                    </p>
+                    
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(231, 76, 60, 0.2); border-radius: 8px; color: #ffadad; font-size: 0.85rem;">
+                        <i class="fas fa-shield-alt"></i> <b>Segurança:</b><br>
+                        Dadores clinicamente <b>INAPTOS</b> não podem ser ativados pelo sistema.
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-form-area">
+                <form method="GET" class="compact-form" onsubmit="return confirm('Tem a certeza que deseja alterar o estado deste dador?');">
+                    
+                    <div class="input-group-modern">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="id_ou_nif" placeholder="Digite o NIF ou ID..." required autofocus autocomplete="off">
+                    </div>
+
+                    <button type="submit" class="btn-toggle-action">
+                        <i class="fas fa-power-off"></i> Alterar Estado
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const alertas = document.querySelectorAll('.alerta');
+            if (alertas.length > 0) {
+                setTimeout(() => {
+                    alertas.forEach(alerta => {
+                        alerta.style.opacity = '0';
+                        setTimeout(() => alerta.remove(), 500);
+                    });
+                }, 6000); // 6 segundos
+            }
+        });
+    </script>
+</body>
+</html>

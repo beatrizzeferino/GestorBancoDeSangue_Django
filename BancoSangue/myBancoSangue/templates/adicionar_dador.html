@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Registar Dador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="fas fa-times-circle"></i>{% endif %}
+                    {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-user-plus"></i></div>
+                <div>
+                    <h2>Novo Dador</h2>
+                    <h3>Registo Completo</h3>
+                </div>
+            </div>
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'menu_outros' %}{% else %}{% url 'home_posto' %}{% endif %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="card-opcao form-card">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="grid-form">
+                    
+                    <div class="input-group full-width">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="nome" placeholder="Nome Completo" value="{{ dados.nome|default:'' }}" required aria-label="Nome Completo">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="nif" placeholder="NIF (9 dígitos)" value="{{ dados.nif|default:'' }}" required maxlength="9" pattern="[0-9]{9}" inputmode="numeric" title="O NIF deve ter 9 dígitos" aria-label="NIF">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" name="contacto" placeholder="Contacto Telefónico" value="{{ dados.contacto|default:'' }}" pattern="[0-9]{9,}" inputmode="tel" aria-label="Contacto Telefónico">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" name="dataNascimento" value="{{ dados.dataNascimento|default:'' }}" required aria-label="Data de Nascimento">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-tint"></i>
+                        <select name="tipoSangue" required aria-label="Tipo de Sangue">
+                            <option value="" disabled {% if not dados.tipoSangue %}selected{% endif %}>Tipo de Sangue</option>
+                            <option value="A+" {% if dados.tipoSangue == 'A+' %}selected{% endif %}>A+</option>
+                            <option value="A-" {% if dados.tipoSangue == 'A-' %}selected{% endif %}>A-</option>
+                            <option value="B+" {% if dados.tipoSangue == 'B+' %}selected{% endif %}>B+</option>
+                            <option value="B-" {% if dados.tipoSangue == 'B-' %}selected{% endif %}>B-</option>
+                            <option value="AB+" {% if dados.tipoSangue == 'AB+' %}selected{% endif %}>AB+</option>
+                            <option value="AB-" {% if dados.tipoSangue == 'AB-' %}selected{% endif %}>AB-</option>
+                            <option value="O+" {% if dados.tipoSangue == 'O+' %}selected{% endif %}>O+</option>
+                            <option value="O-" {% if dados.tipoSangue == 'O-' %}selected{% endif %}>O-</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-venus-mars"></i>
+                        <select name="sexo" required aria-label="Sexo">
+                            <option value="" disabled {% if not dados.sexo %}selected{% endif %}>Sexo</option>
+                            <option value="M" {% if dados.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if dados.sexo == 'F' %}selected{% endif %}>Feminino</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-weight"></i>
+                        <input type="number" name="peso" step="0.1" placeholder="Peso (kg)" value="{{ dados.peso|default:'' }}" required aria-label="Peso">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicacao" {% if dados.medicacao == 'on' %}checked{% endif %}> Medicação
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="tatuagem" {% if dados.tatuagem == 'on' %}checked{% endif %}> Tatuagem
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="piercing" {% if dados.piercing == 'on' %}checked{% endif %}> Piercing
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="doente" {% if dados.doente == 'on' %}checked{% endif %}> Doente
+                        </label>
+                    </div>
+
+                    <div class="container-central">
+                        <button type="submit" class="btn-finalizar">
+                            <i class="fas fa-check-circle"></i> FINALIZAR REGISTO
+                        </button>
+                    </div>
+                </div> 
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

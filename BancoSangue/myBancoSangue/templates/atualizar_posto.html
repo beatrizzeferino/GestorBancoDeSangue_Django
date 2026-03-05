@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar Posto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-edit"></i></div>
+                <div>
+                    <h2>Editar Posto</h2>
+                    <h3>{{ posto.nome }}</h3>
+                </div>
+            </div>
+            {% if request.GET.next == 'lista' %}
+                <a href="{% url 'listar_postos' %}" class="btn-sair">
+            {% elif request.GET.next == 'procurar' %}
+                <a href="{% url 'procurar_posto' %}" class="btn-sair">
+            {% else %}
+                <a href="{% url 'selecionar_posto_para_atualizar' %}" class="btn-sair">
+            {% endif %}
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="card-opcao form-card">
+            <form method="POST">
+                {% csrf_token %}
+
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px; text-align: center; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> Use a caneta para desbloquear a edição do campo.
+                </p>
+
+                <div class="grid-form">
+
+                    <div class="input-group full-width">
+                        <i class="fas fa-building"></i>
+                        <input type="text" name="nome" id="nome" value="{{ posto.nome }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('nome')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="nif" id="nif" value="{{ posto.nif }}" readonly required maxlength="9">
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('nif')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="contacto" id="contacto" value="{{ posto.contacto }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('contacto')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" name="morada" id="morada" value="{{ posto.morada }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('morada')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="btn-container full-width">
+                        <button type="submit" class="btn-large">
+                            <i class="fas fa-save"></i> GUARDAR ALTERAÇÕES
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleEdit(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input.hasAttribute('readonly')) {
+                input.removeAttribute('readonly');
+                input.focus();
+                input.style.background = "rgba(255, 255, 255, 0.1)"; // Realce visual ao editar
+            } else {
+                input.setAttribute('readonly', 'true');
+                input.style.background = "transparent";
+            }
+        }
+    </script>
+</body>
+</html>

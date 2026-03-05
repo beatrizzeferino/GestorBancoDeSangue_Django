@@ -1,0 +1,94 @@
+@startuml BancoDeSangue_Final_Models
+
+
+left to right direction
+
+package "Sistema de Autenticção do Django" {
+    class User << (B,#FF7700) Built-in >> {
+        + username: String
+        + password: Hash/String
+    }
+}
+
+package "Aplicação myBancoSangue" {
+
+    class Utilizador {
+        + tipo: CharField {ADMIN, POSTO, HOSPITAL}
+        --
+        + user: OneToOneField(User)
+        + posto: OneToOneField(Posto)
+        + hospital: OneToOneField(Hospital)
+    }
+
+    class Posto {
+        + nome: CharField
+        + nif: CharField {unique}
+        + contacto: CharField
+        + morada: CharField
+    }
+
+    class Hospital {
+        + nome: CharField
+        + nif: CharField {unique}
+        + contacto: CharField
+        + morada: CharField
+    }
+
+    class Dador {
+        + nome: CharField
+        + nif: CharField {unique}
+        + contacto: CharField
+        + dataNascimento: DateField
+        + tipoSangue: CharField {A+, A-, B+, B-, AB+, AB-, O+, O-}
+        + sexo: CharField {M, F}
+        + ativo: Boolean
+        + peso: Float {>=0}
+        + medicacao: Boolean
+        + tatuagem: Boolean
+        + piercing: Boolean
+        + doente: Boolean
+        --
+        {method} + idade : property
+        {method} + aptidaoAtual : property
+    }
+
+    class Doacao {
+        + data: DateField
+        + quantidade: Float {>=0}
+        --
+        + dador: ForeignKey(Dador)
+        + posto: ForeignKey(Posto)
+        {method} + tipoSangue : property
+    }
+
+    class StockSangue {
+        + tipoSangue: CharField {choices}
+        + componente: CharField {GV, PL, PQ}
+        + quantidade: Float {>=0}
+        + limiteMinimo: Float {>=0, default=200}
+        + limiteMaximo: Float {>=0, default=10^9}
+        --
+        {static} Meta: unique_together(tipoSangue, componente)
+    }
+
+    class PedidoHospital {
+        + tipo_sangue: CharField {A+, A-, B+, B-, AB+, AB-, O+, O-}
+        + quantidade: Float {>=0}
+        + componente: CharField {GV, PL, PQ}
+        + estadoPedido: CharField {A, R, P}
+        + dataPedido: DateField
+        --
+        + hospital: ForeignKey(Hospital)
+    }
+}
+
+' Relacionamentos
+User "1" -- "1" Utilizador
+Utilizador "1" -- "0..1" Posto
+Utilizador "1" -- "0..1" Hospital
+
+Posto "1" -- "*" Doacao : "registra"
+Dador "1" -- "*" Doacao : "realiza"
+Hospital "1" -- "*" PedidoHospital : "solicita"
+
+@enduml

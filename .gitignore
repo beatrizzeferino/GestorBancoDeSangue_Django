@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Banco de dados
+db.sqlite3
+
+# IDEs
+.vscode/
+.idea/
+
+# Arquivos temporários ou imagens PUML
+BancoSangue/PUML/*.png
+*.txt

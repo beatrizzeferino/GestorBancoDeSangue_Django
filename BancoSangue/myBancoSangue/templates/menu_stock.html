@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Stock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<div class="dashboard-container"> <!-- mesma largura que página de pedidos -->
+
+    <header class="glass-header">
+        <div class="user-info">
+            <div class="avatar-small"><i class="fas fa-warehouse"></i></div>
+            <div>
+                <h2>Stock de Sangue</h2>
+                <h3>Consulta Geral</h3>
+            </div>
+        </div>
+
+        <a href="{% if tipo_user == 'ADMIN' %}{% url 'home_admin' %}{% else %}{% url 'home_hospital' %}{% endif %}" class="btn-sair">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </header>
+
+    <div class="card-opcao glass-panel"> <!-- painel tipo pedidos -->
+
+        <!-- FILTROS -->
+        <div class="filtros">
+            <select id="filtroTipo">
+                <option value="">Todos os tipos</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+            </select>
+
+            <select id="filtroComponente">
+                <option value="">Todos os componentes</option>
+                <option value="GV">Glóbulos Vermelhos</option>
+                <option value="PL">Plasma</option>
+                <option value="PQ">Plaquetas</option>
+            </select>
+
+            <select id="filtroEstado">
+                <option value="">Todos</option>
+                <option value="baixo">Abaixo do mínimo</option>
+                <option value="ok">Normal</option>
+            </select>
+        </div>
+
+        <!-- TABELA -->
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Tipo Sanguíneo</th>
+                    <th>Componente</th>
+                    <th>Quantidade (ml)</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaStock">
+                {% for s in stocks %}
+                <tr
+                    data-tipo="{{ s.tipoSangue }}"
+                    data-componente="{{ s.componente }}"
+                    data-estado="{% if s in alertas_abaixo_minimo %}baixo{% else %}ok{% endif %}"
+                >
+                    <td>{{ s.tipoSangue }}</td>
+                    <td>
+                        {% if s.componente == 'GV' %}Glóbulos Vermelhos{% endif %}
+                        {% if s.componente == 'PL' %}Plasma{% endif %}
+                        {% if s.componente == 'PQ' %}Plaquetas{% endif %}
+                    </td>
+                    <td>{{ s.quantidade }}</td>
+                    <td>
+                        {% if s in alertas_abaixo_minimo %}
+                            <span class="estado estado-baixo">Abaixo do mínimo</span>
+                        {% else %}
+                            <span class="estado estado-aprovado">Normal</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script src="{% static 'js/consultar_stock.js' %}"></script>
+
+</body>
+</html>

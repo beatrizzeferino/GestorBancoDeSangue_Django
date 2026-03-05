@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Postos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="fas fa-exclamation-circle"></i>{% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="dashboard-container">
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div>
+                    <h2>Controlo de Unidades</h2>
+                    <h3>Gestão de Postos</h3>
+                </div>
+            </div>
+
+            <a href="{% url 'home_admin' %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="menu-grid">
+            <a href="{% url 'criar_posto' %}" class="card-opcao">
+                <i class="fas fa-plus-circle"></i>
+                <span>Criar Novo Posto</span>
+            </a>
+
+            <a href="{% url 'selecionar_posto_para_atualizar' %}" class="card-opcao">
+                <i class="fas fa-edit"></i>
+                <span>Atualizar Posto</span>
+            </a>
+
+            <a href="{% url 'procurar_posto' %}" class="card-opcao">
+                <i class="fas fa-search-location"></i>
+                <span>Procurar Posto</span>
+            </a>
+
+            <a href="{% url 'listar_postos' %}" class="card-opcao">
+                <i class="fas fa-list-ul"></i>
+                <span>Listar Postos</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

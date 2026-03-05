@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Administrador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="fas fa-times-circle"></i>{% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div>
+                    <h2>Novo Administrador</h2>
+                    <h3>Gestão de Acessos</h3>
+                </div>
+            </div>
+
+            <a href="{% url 'home_admin' %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="card-opcao form-card">
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="grid-form">
+                    <div class="input-group full-width">
+                        <i class="fas fa-fingerprint"></i>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="E-mail" required>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <div class="container-central">
+                        <button type="submit" class="btn-finalizar">
+                            <i class="fas fa-save"></i> CRIAR ADMINISTRADOR
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Posto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="fas fa-times-circle"></i>{% endif %}
+                    {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                    {% if message.tags == 'info' %}<i class="fas fa-info-circle"></i>{% endif %}
+                    
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-hospital-user"></i>
+                </div>
+                <div>
+                    <h2>Bem-vindo,</h2>
+                    <h3 id="nomePosto">
+                        {% if user.utilizador.posto %}
+                            {{ user.utilizador.posto.nome }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+            
+            <a href="{% url 'logout' %}" class="btn-sair">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </header>
+
+        <div class="menu-grid">
+            <a href="{% url 'posto_adicionar_dador' %}" class="card-opcao">
+                <i class="fas fa-user-plus"></i>
+                <span>Adicionar Dador</span>
+            </a>
+
+            <a href="{% url 'posto_adicionar_doacao' %}" class="card-opcao">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>Adicionar Doação</span>
+            </a>
+
+            <a href="{% url 'posto_listar_dadores' %}" class="card-opcao">
+                <i class="fas fa-address-card"></i>
+                <span>Consultar Dador</span>
+            </a>
+
+            <a href="{% url 'posto_procurar_dador' %}" class="card-opcao">
+                <i class="fas fa-search"></i>
+                <span>Procurar Dador</span>
+            </a>
+
+            <a href="{% url 'posto_ativar_desativar' %}" class="card-opcao">
+                <i class="fas fa-user-check"></i>
+                <span>Gerir Estado Dador</span>
+            </a>
+
+            <a href="{% url 'posto_selecionar_para_atualizar' %}" class="card-opcao">
+                <i class="fas fa-user-pen"></i>
+                <span>Atualizar Dados</span>
+            </a>
+
+            <a href="{% url 'posto_consultar_doacoes' %}" class="card-opcao">
+                <i class="fas fa-notes-medical"></i>
+                <span>Histórico Doações</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

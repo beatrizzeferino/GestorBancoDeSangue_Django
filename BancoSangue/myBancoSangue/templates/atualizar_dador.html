@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar Dador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-user-edit"></i></div>
+                <div>
+                    <h2>Atualizar Dados</h2>
+                    <h3>{{ dador.nome }}</h3>
+                </div>
+            </div>
+            <a href="{% url 'posto_selecionar_para_atualizar' %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="card-opcao form-card">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px; text-align: center; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> Clique no ícone <i class="fas fa-pen"></i> para editar apenas o campo desejado.
+                </p>
+
+                <div class="grid-form">
+                    
+                    <div class="input-group full-width">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="nome" id="nome" value="{{ dador.nome }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('nome')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="nif" id="nif" value="{{ dador.nif }}" readonly required maxlength="9">
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('nif')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="contacto" id="contacto" value="{{ dador.contacto }}" readonly>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('contacto')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" name="dataNascimento" id="dataNascimento" value="{{ dador.dataNascimento|date:'Y-m-d' }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('dataNascimento')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-tint"></i>
+                        <select name="tipoSangue" id="tipoSangue" disabled required>
+                            <option value="{{ dador.tipoSangue }}" selected>{{ dador.tipoSangue }} (Atual)</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('tipoSangue')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-venus-mars"></i>
+                        <select name="sexo" id="sexo" disabled required>
+                            <option value="{{ dador.sexo }}" selected>
+                                {% if dador.sexo == 'M' %}Masculino{% elif dador.sexo == 'F' %}Feminino{% else %}Outro{% endif %} (Atual)
+                            </option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('sexo')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-weight"></i>
+                        <input type="number" name="peso" id="peso" step="0.1" value="{{ dador.peso|stringformat:'.1f' }}" readonly required>
+                        <button type="button" class="btn-toggle-edit" onclick="toggleEdit('peso')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="medicacao" {% if dador.medicacao %}checked{% endif %}> Medicação
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="tatuagem" {% if dador.tatuagem %}checked{% endif %}> Tatuagem
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="piercing" {% if dador.piercing %}checked{% endif %}> Piercing
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="doente" {% if dador.doente %}checked{% endif %}> Doente
+                        </label>
+                    </div>
+
+                    <div class="btn-container">
+                        <button type="submit" class="btn-large">
+                            <i class="fas fa-save"></i> GUARDAR ALTERAÇÕES
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+
+    <script>
+        function toggleEdit(fieldId) {
+            const input = document.getElementById(fieldId);
+            
+            // Verifica se é um SELECT ou um INPUT normal
+            if (input.tagName === 'SELECT') {
+                if (input.hasAttribute('disabled')) {
+                    input.removeAttribute('disabled');
+                    input.focus();
+                } else {
+                    input.setAttribute('disabled', 'true');
+                }
+            } else {
+                if (input.hasAttribute('readonly')) {
+                    input.removeAttribute('readonly');
+                    input.focus(); // Coloca o cursor lá dentro automaticamente
+                } else {
+                    input.setAttribute('readonly', 'true');
+                }
+            }
+        }
+
+        // Antes de enviar o formulário, precisamos garantir que os SELECTS disabled
+        // sejam ativados, senão o valor não é enviado para o Django!
+        document.querySelector('form').addEventListener('submit', function() {
+            const selects = document.querySelectorAll('select[disabled]');
+            selects.forEach(s => s.removeAttribute('disabled'));
+        });
+    </script>
+
+</body>
+</html>

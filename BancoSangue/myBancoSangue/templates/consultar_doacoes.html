@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Doações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-file-medical-alt"></i>
+                </div>
+                <div>
+                    <h2>Consultar Doações</h2>
+                    <h3>Histórico e Registos</h3>
+                </div>
+            </div>
+            
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'home_admin' %}{% elif tipo_user == 'POSTO' %}{% url 'home_posto' %}{% else %}{% url 'home_hospital' %}{% endif %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="actions-bar">
+            <button onclick="toggleFiltros()" class="btn-toggle-filters">
+                <i class="fas fa-filter"></i> Filtrar Resultados
+                <i class="fas fa-chevron-down" id="iconSeta"></i>
+            </button>
+        </div>
+
+        <div id="areaFiltros" class="filters-grid" style="display: none;">
+            
+            <div class="filter-card">
+                <form method="GET" class="filter-form">
+                    <input type="hidden" name="modo" value="dador">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="id_ou_nif" placeholder="NIF ou ID do Dador..." value="{{ query_nif|default:'' }}" required>
+                    </div>
+                    <button type="submit" class="btn-filter" title="Pesquisar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="filter-card">
+                <form method="GET" class="filter-form">
+                    <input type="hidden" name="modo" value="tipo">
+                    <div class="input-group">
+                        <i class="fas fa-tint"></i>
+                        <select name="tipo_sangue" required style="cursor: pointer;">
+                            <option value="" disabled selected>Tipo de Sangue</option>
+                            <option value="A+" {% if query_tipo == 'A+' %}selected{% endif %}>A+</option>
+                            <option value="A-" {% if query_tipo == 'A-' %}selected{% endif %}>A-</option>
+                            <option value="B+" {% if query_tipo == 'B+' %}selected{% endif %}>B+</option>
+                            <option value="B-" {% if query_tipo == 'B-' %}selected{% endif %}>B-</option>
+                            <option value="AB+" {% if query_tipo == 'AB+' %}selected{% endif %}>AB+</option>
+                            <option value="AB-" {% if query_tipo == 'AB-' %}selected{% endif %}>AB-</option>
+                            <option value="O+" {% if query_tipo == 'O+' %}selected{% endif %}>O+</option>
+                            <option value="O-" {% if query_tipo == 'O-' %}selected{% endif %}>O-</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-filter" title="Filtrar">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </form>
+            </div>
+
+            <form method="GET" style="height: 100%;">
+                <input type="hidden" name="modo" value="tudo">
+                <button type="submit" class="btn-large btn-tudo">
+                    <i class="fas fa-sync-alt"></i> LIMPAR
+                </button>
+            </form>
+
+        </div>
+
+        <div class="glass-panel">
+            
+            <h3 style="color: white; margin-bottom: 20px; font-weight: normal; font-size: 1.1rem; border-left: 4px solid #fff; padding-left: 10px;">
+                {% if modo == 'dador' %}
+                    Resultados para o dador: <b>{{ query_nif }}</b>
+                {% elif modo == 'tipo' %}
+                    Doações do tipo sanguíneo: <b>{{ query_tipo }}</b>
+                {% else %}
+                    Exibindo todas as doações ({{ doacoes.count }}).
+                {% endif %}
+            </h3>
+
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Dador</th>
+                        <th>Tipo Sangue</th>
+                        <th>Quantidade</th>
+                        {% if tipo_user == 'ADMIN' %}<th>Posto</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doacao in doacoes %}
+                    <tr>
+                        <td>{{ doacao.data|date:"d/m/Y" }}</td>
+                        <td>
+                            <b>{{ doacao.dador.nome }}</b><br>
+                            <span style="font-size: 0.8rem; opacity: 0.7;">NIF: {{ doacao.dador.nif }}</span>
+                        </td>
+                        <td>
+                            <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-weight: bold;">
+                                {{ doacao.dador.tipoSangue }}
+                            </span>
+                        </td>
+                        <td>{{ doacao.quantidade }} ml</td>
+                        
+                        {% if tipo_user == 'ADMIN' %}
+                            <td>{{ doacao.posto.nome }}</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{% if tipo_user == 'ADMIN' %}5{% else %}4{% endif %}" class="empty-message">
+                            Nenhuma doação encontrada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/consultar_doacoes.js' %}"></script>
+    
+    </body>
+</html>

@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Unidades</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    <div class="dashboard-container">
+
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <div>
+                    <h2>Gestão de Unidades</h2>
+                    <h3>{{ postos.count }} Postos Registados</h3>
+                </div>
+            </div>
+            <a href="{% url 'menu_postos' %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="glass-panel" style="margin-top: 20px;">
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>Nome do Posto</th>
+                        <th>NIF</th>
+                        <th>Contacto</th>
+                        <th>Morada</th> <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for posto in postos %}
+                    <tr>
+                        <td><strong>{{ posto.nome }}</strong></td>
+                        <td>{{ posto.nif }}</td>
+                        <td>{{ posto.contacto }}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ posto.morada }}">
+                            {{ posto.morada }}
+                        </td>
+                        <td class="text-center">
+                            <div style="display: flex; justify-content: center; gap: 10px;">
+                                <a href="{% url 'procurar_posto' %}?id_ou_nif={{ posto.nif }}&next=detalhes" class="btn-action" title="Ver Detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'atualizar_posto' posto.id %}?next=lista" class="btn-action" title="Editar Posto" style="background: rgba(0, 212, 255, 0.2);">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-message"> Ainda não existem postos registados no sistema.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

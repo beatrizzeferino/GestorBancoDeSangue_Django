@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administrador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div>
+                    <h2>Bem-vindo,</h2>
+                    <h3>{{ user.username }}</h3>
+                </div>
+            </div>
+
+            <a href="{% url 'logout' %}" class="btn-sair">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </header>
+
+        <div class="menu-grid">
+
+            <a href="{% url 'menu_add_admin' %}" class="card-opcao">
+                <i class="fas fa-user-plus"></i>
+                <span>Criar Administrador</span>
+            </a>
+
+            <a href="{% url 'menu_postos' %}" class="card-opcao">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Postos</span>
+            </a>
+
+            <a href="{% url 'menu_hospitais' %}" class="card-opcao">
+                <i class="fas fa-hospital"></i>
+                <span>Hospitais</span>
+            </a>
+
+            <a href="{% url 'menu_stock' %}" class="card-opcao">
+                <i class="fas fa-warehouse"></i>
+                <span>Consultar Stock</span>
+            </a>
+
+            <a href="{% url 'consultar_doacoes' %}" class="card-opcao">
+                <i class="fas fa-notes-medical"></i>
+                <span>Histórico Doações</span>
+            </a>
+
+            <a href="{% url 'consultar_pedidos' %}" class="card-opcao">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Consultar Pedidos</span>
+            </a>
+
+            <a href="{% url 'gerar_relatorios' %}" class="card-opcao">
+                <i class="fas fa-chart-bar"></i>
+                <span>Relatórios</span>
+            </a>
+
+            <a href="{% url 'menu_outros' %}" class="card-opcao">
+                <i class="fas fa-ellipsis-h"></i>
+                <span>Outros</span>
+            </a>
+
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

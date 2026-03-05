@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurar Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}"><span>{{ message }}</span></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-hospital"></i></div>
+                <div>
+                    <h2>Procurar Hospital</h2>
+                    <h3>Pesquisa por NIF ou ID</h3>
+                </div>
+            </div>
+            
+            {% if request.GET.next == 'detalhesh' %}
+                <a href="{% url 'listar_hospitais' %}" class="btn-sair">
+            {% else %}
+                <a href="{% url 'menu_hospitais' %}" class="btn-sair">
+            {% endif %}
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="search-section glass-panel">
+            <form method="GET" class="search-form-hero">
+                <div class="input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="id_ou_nif" placeholder="NIF ou ID do hospital..." value="{{ request.GET.id_ou_nif|default:'' }}" required autofocus>
+                </div>
+                <button type="submit" class="btn-search-hero"><i class="fas fa-search"></i> PESQUISAR</button>
+            </form>
+        </div>
+
+        {% if procurou and hospital %}
+        <div id="resultadoHospital" class="profile-card glass-panel fade-in-up">
+            
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fas fa-hospital-alt"></i></div>
+                <div class="profile-title">
+                    <h2>{{ hospital.nome }}</h2>
+                    <span class="status-badge status-active">HOSPITAL PARCEIRO</span>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <div class="info-item">
+                    <label>ID Sistema</label>
+                    <span class="blood-highlight">#{{ hospital.id }}</span>
+                </div>
+                <div class="info-item">
+                    <label>NIF</label>
+                    <span>{{ hospital.nif }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>Contacto</label>
+                    <span>{{ hospital.contacto }}</span>
+                </div>
+
+                <div class="info-item">
+                    <label>Total Pedidos</label>
+                    <span>{{ hospital.pedidos.count }}</span>
+                </div>
+
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <label>Morada</label>
+                    <span>{{ hospital.morada }}</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="#historicoPedidos" class="btn-action-outline" onclick="document.getElementById('historicoPedidos').scrollIntoView({behavior: 'smooth'}); return false;">
+                    <i class="fas fa-history"></i> Ver Pedidos
+                </a>
+                
+                <a href="{% url 'atualizar_hospital' hospital.id %}?next=procurarh" class="btn-action-filled">
+                    <i class="fas fa-edit"></i> Atualizar Dados
+                </a>
+            </div>
+
+        </div>
+
+        <div id="historicoPedidos" class="glass-panel fade-in-up" style="margin-top: 25px; animation-delay: 0.2s;">
+            <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 4px solid #00d4ff; padding-left: 10px;">
+                <i class="fas fa-clipboard-list"></i> Histórico de Pedidos
+            </h3>
+            
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo Sangue</th>
+                        <th>Quantidade</th>
+                        <th>Componente</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in hospital.pedidos.all|dictsortreversed:"dataPedido" %}
+                    <tr>
+                        <td>{{ pedido.dataPedido|date:"d/m/Y" }}</td>
+                        <td><span class="tag-sangue">{{ pedido.tipo_sangue }}</span></td>
+                        <td>{{ pedido.quantidade }} ml</td>
+                        <td>{{ pedido.get_componente_display }}</td>
+                        <td>
+                            <span class="status-badge {{ pedido.estadoPedido|lower }}">
+                                {{ pedido.get_estadoPedido_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-message">
+                            Este hospital ainda não realizou pedidos.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if procurou and not hospital %}
+        <div class="profile-card glass-panel fade-in-up" style="text-align: center; justify-content: center; padding: 50px;">
+            <div style="font-size: 4rem; opacity: 0.3; margin-bottom: 20px; color: #fff;">
+                <i class="fas fa-hospital-user"></i>
+            </div>
+            <h3 style="color: white; margin-bottom: 10px;">Nenhum Hospital Encontrado</h3>
+            <p style="color: rgba(255,255,255,0.6);">Não encontrámos registos para "<b>{{ request.GET.id_ou_nif }}</b>".</p>
+        </div>
+        {% endif %}
+
+    </div>
+    
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/procurar_dador.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Doação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}">
+                    {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="fas fa-times-circle"></i>{% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-hand-holding-medical"></i>
+                </div>
+                <div>
+                    <h2>Nova Doação</h2>
+                    <h3>Registar Recolha</h3>
+                </div>
+            </div>
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'menu_outros' %}{% else %}{% url 'home_posto' %}{% endif %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="card-opcao form-card">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="grid-form">
+                    
+                    <div class="input-group full-width">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" name="nif" placeholder="NIF do Dador (9 dígitos)" required maxlength="9" pattern="[0-9]{9}" title="Insira os 9 dígitos do NIF" autofocus>
+                    </div>
+
+                    {% if tipo_user == 'ADMIN' %}
+                        <div class="input-group full-width">
+                            <i class="fas fa-hospital-alt"></i>
+                            <select name="posto" required>
+                                <option value="" disabled selected>Selecione o Posto de Recolha</option>
+                                {% for posto in postos %}
+                                    <option value="{{ posto.id }}">{{ posto.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    <div class="input-group">
+                        <i class="fas fa-flask"></i>
+                        <input type="number" name="quantidade" placeholder="Quantidade (ml)" value="450" required min="100" max="600">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input
+                            type="date"
+                            name="data_doacao"
+                            value="{{ hoje }}"
+                            readonly
+                            title="Data definida automaticamente pelo sistema"
+                        >
+                    </div>
+                    <!--
+                    <div class="full-width" style="margin-bottom: 20px;">
+                        <small style="color: rgba(255,255,255,0.6); font-style: italic;">
+                            * Se a data não for selecionada, será assumida a data de hoje.
+                        </small>
+                    </div>
+                    -->
+
+                    <div class="container-central">
+                        <button type="submit" class="btn-finalizar">
+                            <i class="fas fa-save"></i> REGISTAR DOAÇÃO
+                        </button>
+                    </div>
+
+                </div> 
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+/* static/css/forms.css */
+
+/* --- INPUTS & SELECTS --- */
+.input-group {
+    position: relative; margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    display: flex; align-items: center;
+}
+.input-group i { color: white; margin-right: 10px; font-size: 14px; }
+.input-group input, .input-group select {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: white; padding: 10px 5px; font-size: 15px;
+}
+.input-group input::placeholder { color: rgba(255, 255, 255, 0.7); }
+.input-group select option { color: #333; background-color: #fff; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+/* Input Bloqueado (Readonly) */
+.input-group input[readonly], .input-group select[disabled] {
+    opacity: 0.7; cursor: not-allowed;
+}
+
+/* --- BOTÕES --- */
+button, .btn-large {
+    width: 100%; padding: 12px; border: none; border-radius: 25px;
+    background: linear-gradient(to right, #764ba2, #c06c84);
+    color: white; font-weight: bold; cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); letter-spacing: 1px;
+    transition: 0.3s; text-transform: uppercase; font-size: 14px;
+}
+button:hover { opacity: 0.9; transform: scale(1.02); }
+
+/* Botão Lápis Pequeno */
+.btn-toggle-edit {
+    width: auto !important; min-width: auto !important;
+    background: transparent !important; box-shadow: none !important; border: none !important;
+    padding: 5px 10px !important; font-size: 1rem !important;
+    color: rgba(255, 255, 255, 0.6); margin-left: 10px; cursor: pointer; transition: 0.3s;
+}
+.btn-toggle-edit:hover {
+    color: #fff; transform: scale(1.2); background: rgba(255, 255, 255, 0.1) !important; border-radius: 50%;
+}
+
+/* --- GRID DE FORMULÁRIO --- */
+.form-card { cursor: default; display: block; text-align: left; padding: 40px; height: auto; width: 100%; }
+.grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.full-width, .container-central, .checkbox-group, .btn-container { grid-column: span 2; }
+.btn-container { display: flex; justify-content: center; margin-top: 20px; }
+.btn-large { min-width: 250px; padding: 15px 40px; }
+
+/* Checkboxes */
+.checkbox-group {
+    display: flex; justify-content: center; gap: 20px;
+    background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; flex-wrap: wrap;
+}
+.checkbox-label { color: white; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+
+/* --- TABELAS --- */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px;
+    padding: 25px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow-x: auto;
+}
+.glass-table { width: 100%; border-collapse: collapse; color: white; min-width: 600px; }
+.glass-table th { text-align: left; padding: 15px; border-bottom: 2px solid rgba(255, 255, 255, 0.2); font-weight: 600; text-transform: uppercase; font-size: 0.9rem; }
+.glass-table td { padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); vertical-align: middle; }
+.glass-table tr:hover td { background: rgba(255, 255, 255, 0.1); }
+.text-center { text-align: center !important; }
+.btn-action {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 8px 16px; background: rgba(52, 152, 219, 0.8); color: white; text-decoration: none;
+    border-radius: 10px; font-size: 0.9rem; border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* --- BARRA DE PESQUISA --- */
+.search-container { margin-bottom: 20px; display: flex; gap: 10px; width: 100%; max-width: 600px; }
+.search-input {
+    flex: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1); color: white; outline: none; backdrop-filter: blur(5px); transition: 0.3s;
+}
+.btn-search {
+    background: white; color: #764ba2; border: none; width: 50px; height: 45px;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.btn-clear { color: #e74c3c !important; }
+.search-input::placeholder {
+    color: white !important; /* Força a cor branca */
+    opacity: 1;              /* Garante opacidade total */
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .grid-form { grid-template-columns: 1fr; }
+    .full-width, .checkbox-group, .btn-container { grid-column: span 1; }
+    .checkbox-group { flex-direction: column; align-items: flex-start; }
+    .form-card { padding: 25px; }
+}

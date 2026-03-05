@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurar Dador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}"><span>{{ message }}</span></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-search"></i></div>
+                <div>
+                    <h2>Procurar Dador</h2>
+                    <h3>Pesquisa por NIF ou ID</h3>
+                </div>
+            </div>
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'menu_outros' %}{% else %}{% url 'home_posto' %}{% endif %}" class="btn-sair"><i class="fas fa-arrow-left"></i> Voltar</a>
+        </header>
+
+        <div class="search-section glass-panel">
+            <form method="GET" class="search-form-hero">
+                <div class="input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="id_ou_nif" placeholder="NIF ou ID do dador..." value="{{ termo_pesquisado|default:'' }}" required autofocus>
+                </div>
+                <button type="submit" class="btn-search-hero"><i class="fas fa-search"></i> PESQUISAR</button>
+            </form>
+        </div>
+
+        {% if dador %}
+        <div id="resultadoDador" class="profile-card glass-panel fade-in-up">
+            
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                <div class="profile-title">
+                    <h2>{{ dador.nome }}</h2>
+                    {% if dador.ativo %}
+                        <span class="status-badge status-active">CONTA ATIVA</span>
+                    {% else %}
+                        <span class="status-badge status-inactive">CONTA INATIVA</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <div class="info-item">
+                    <label>NIF</label>
+                    <span>{{ dador.nif }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Tipo Sanguíneo</label>
+                    <span class="blood-highlight">{{ dador.tipoSangue }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>Aptidão Médica</label>
+                    {% if dador.aptidaoAtual %}
+                        <div class="badge-apto"><i class="fas fa-check-circle"></i> Apto para Doar</div>
+                    {% else %}
+                        <div class="badge-inapto"><i class="fas fa-ban"></i> Inapto Temporariamente</div>
+                    {% endif %}
+                </div>
+
+                <div class="info-item">
+                    <label>Contacto</label>
+                    <span>{{ dador.contacto|default:"--" }}</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{% url 'consultar_doacoes' %}?modo=dador&id_ou_nif={{ dador.nif }}" class="btn-action-outline">
+                    <i class="fas fa-history"></i> Ver Histórico
+                </a>
+                <a href="{% url 'atualizar_dador' dador.id %}" class="btn-action-filled">
+                    <i class="fas fa-edit"></i> Atualizar Dados
+                </a>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+    
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/procurar_dador.js' %}"></script>
+</body>
+</html>

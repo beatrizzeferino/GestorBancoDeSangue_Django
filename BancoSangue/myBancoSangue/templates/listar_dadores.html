@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Dadores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h2>Lista de Dadores</h2>
+                    <h3>Consultar Base de Dados</h3>
+                </div>
+            </div>
+            
+            <a href="{% if tipo_user == 'ADMIN' %}{% url 'menu_outros' %}{% else %}{% url 'home_posto' %}{% endif %}" class="btn-sair">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="tabs-bar">
+            <button class="tab-btn active" onclick="openTab('tabAtivos', this)">
+                <i class="fas fa-check-circle"></i> Dadores Ativos
+                <span class="badge">{{ dadores_ativos.count }}</span>
+            </button>
+            <button class="tab-btn" onclick="openTab('tabInativos', this)">
+                <i class="fas fa-times-circle"></i> Inativos / Arquivo
+                <span class="badge">{{ dadores_inativos.count }}</span>
+            </button>
+        </div>
+
+        <div id="tabAtivos" class="tab-content active-content glass-panel">
+            <table id="tabelaAtivos" class="glass-table">
+                <thead>
+                    <tr>
+                        <th style="cursor: pointer;" onclick="ordenarTabela(0, 'tabelaAtivos')">
+                            Nome <i class="fas fa-sort" style="opacity:0.5; font-size:0.8em"></i>
+                        </th>
+                        
+                        <th style="cursor: pointer;" onclick="ordenarTabela(1, 'tabelaAtivos')">
+                            NIF <i class="fas fa-sort" style="opacity:0.5; font-size:0.8em"></i>
+                        </th>
+
+                        <th>
+                            <select onchange="filtrarSangueHeader(this)" style="background: transparent; color: white; border: none; font-weight: bold; cursor: pointer; font-family: inherit; font-size: inherit;">
+                                <option value="todos" style="color: #333;">Sangue (Todos)</option>
+                                <option value="A+" style="color: #333;">A+</option>
+                                <option value="A-" style="color: #333;">A-</option>
+                                <option value="B+" style="color: #333;">B+</option>
+                                <option value="B-" style="color: #333;">B-</option>
+                                <option value="AB+" style="color: #333;">AB+</option>
+                                <option value="AB-" style="color: #333;">AB-</option>
+                                <option value="O+" style="color: #333;">O+</option>
+                                <option value="O-" style="color: #333;">O-</option>
+                            </select>
+                        </th>
+                        <th>Contacto</th>
+                        <th class="text-center">Aptidão Médica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dador in dadores_ativos %}
+                    <tr>
+                        <td><b>{{ dador.nome }}</b></td>
+                        <td>{{ dador.nif }}</td>
+                        <td><span class="tag-sangue">{{ dador.tipoSangue }}</span></td>
+                        <td>{{ dador.contacto|default:"--" }}</td>
+                        
+                        <td class="text-center">
+                            {% if dador.aptidaoAtual %}
+                                <span class="badge-apto">
+                                    <i class="fas fa-check-circle"></i> Apto
+                                </span>
+                            {% else %}
+                                <span class="badge-inapto">
+                                    <i class="fas fa-ban"></i> Inapto
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-message">Não existem dadores ativos.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tabInativos" class="tab-content glass-panel" style="display: none;">
+            <table id="tabelaInativos" class="glass-table">
+                <thead>
+                    <tr>
+                        <th style="cursor: pointer;" onclick="ordenarTabela(0, 'tabelaInativos')">
+                            Nome <i class="fas fa-sort" style="opacity:0.5; font-size:0.8em"></i>
+                        </th>
+                        
+                        <th style="cursor: pointer;" onclick="ordenarTabela(1, 'tabelaInativos')">
+                            NIF <i class="fas fa-sort" style="opacity:0.5; font-size:0.8em"></i>
+                        </th>
+                    
+                        <th>
+                            <select onchange="filtrarSangueHeader(this)" style="background: transparent; color: white; border: none; font-weight: bold; cursor: pointer; font-family: inherit; font-size: inherit;">
+                                <option value="todos" style="color: #333;">Sangue (Todos)</option>
+                                <option value="A+" style="color: #333;">A+</option>
+                                <option value="A-" style="color: #333;">A-</option>
+                                <option value="B+" style="color: #333;">B+</option>
+                                <option value="B-" style="color: #333;">B-</option>
+                                <option value="AB+" style="color: #333;">AB+</option>
+                                <option value="AB-" style="color: #333;">AB-</option>
+                                <option value="O+" style="color: #333;">O+</option>
+                                <option value="O-" style="color: #333;">O-</option>
+                            </select>
+                        </th>
+                    
+                        <th class="text-center" style="cursor: pointer;" onclick="ordenarTabela(3, 'tabelaInativos')">
+                            Motivo (Aptidão) <i class="fas fa-sort" style="opacity:0.5; font-size:0.8em"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dador in dadores_inativos %}
+                    <tr style="opacity: 0.8;">
+                        <td><b>{{ dador.nome }}</b></td>
+                        <td>{{ dador.nif }}</td>
+                        
+                        <td><span class="tag-sangue">{{ dador.tipoSangue }}</span></td>
+                        
+                        <td class="text-center">
+                            {% if dador.aptidaoAtual %}
+                                <span class="badge-neutro">Desativado</span>
+                            {% else %}
+                                <span class="badge-inapto">
+                                    <i class="fas fa-heart-broken"></i> INAPTO CLÍNICO
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-message">Nenhum dador inativo.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/listar_dadores.js' %}"></script>
+
+</body>
+</html>

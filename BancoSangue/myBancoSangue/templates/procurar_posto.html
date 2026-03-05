@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurar Posto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+    {% if messages %}
+        <div class="mensagens-alerta">
+            {% for message in messages %}
+                <div class="alerta {{ message.tags }}"><span>{{ message }}</span></div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+        
+        <header class="glass-header">
+            <div class="user-info">
+                <div class="avatar-small"><i class="fas fa-search-location"></i></div>
+                <div>
+                    <h2>Procurar Posto</h2>
+                    <h3>Pesquisa por NIF ou ID</h3>
+                </div>
+            </div>
+            
+            {% if request.GET.next == 'detalhes' %}
+                <a href="{% url 'listar_postos' %}" class="btn-sair">
+            {% else %}
+                <a href="{% url 'menu_postos' %}" class="btn-sair">
+            {% endif %}
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <div class="search-section glass-panel">
+            <form method="GET" class="search-form-hero">
+                <div class="input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="id_ou_nif" placeholder="NIF ou ID do posto..." value="{{ request.GET.id_ou_nif|default:'' }}" required autofocus>
+                </div>
+                <button type="submit" class="btn-search-hero"><i class="fas fa-search"></i> PESQUISAR</button>
+            </form>
+        </div>
+
+        {% if procurou and posto %}
+        <div id="resultadoPosto" class="profile-card glass-panel fade-in-up">
+            
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fas fa-clinic-medical"></i></div>
+                <div class="profile-title">
+                    <h2>{{ posto.nome }}</h2>
+                    <span class="status-badge status-active">POSTO DE RECOLHA</span>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <div class="info-item">
+                    <label>ID Sistema</label>
+                    <span class="blood-highlight">#{{ posto.id }}</span>
+                </div>
+                <div class="info-item">
+                    <label>NIF</label>
+                    <span>{{ posto.nif }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>Contacto</label>
+                    <span>{{ posto.contacto }}</span>
+                </div>
+
+                <div class="info-item">
+                    <label>Total Doações</label>
+                    <span>{{ posto.doacoes.count }}</span>
+                </div>
+
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <label>Morada</label>
+                    <span>{{ posto.morada }}</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="#historicoDoacoes" class="btn-action-outline" onclick="document.getElementById('historicoDoacoes').scrollIntoView({behavior: 'smooth'}); return false;">
+                    <i class="fas fa-history"></i> Ver Doações
+                </a>
+                
+                <a href="{% url 'atualizar_posto' posto.id %}?next=procurar" class="btn-action-filled">
+                    <i class="fas fa-edit"></i> Atualizar Dados
+                </a>
+            </div>
+
+        </div>
+
+        <div id="historicoDoacoes" class="glass-panel fade-in-up" style="margin-top: 25px; animation-delay: 0.2s;">
+            <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 4px solid #00d4ff; padding-left: 10px;">
+                <i class="fas fa-history"></i> Histórico de Doações Realizadas
+            </h3>
+            
+            <table class="glass-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Dador</th>
+                        <th>Sangue</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doacao in posto.doacoes.all|dictsortreversed:"data" %}
+                    <tr>
+                        <td>{{ doacao.data|date:"d/m/Y" }}</td>
+                        <td><b>{{ doacao.dador.nome }}</b></td>
+                        <td><span class="tag-sangue">{{ doacao.dador.tipoSangue }}</span></td>
+                        <td>{{ doacao.quantidade }} ml</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-message">Este posto ainda não registou doações.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if procurou and not posto %}
+        <div class="profile-card glass-panel fade-in-up" style="text-align: center; justify-content: center; padding: 50px;">
+            <div style="font-size: 4rem; opacity: 0.3; margin-bottom: 20px; color: #fff;">
+                <i class="fas fa-search-location"></i>
+            </div>
+            <h3 style="color: white; margin-bottom: 10px;">Nenhum Posto Encontrado</h3>
+            <p style="color: rgba(255,255,255,0.6);">Não encontrámos registos para "<b>{{ request.GET.id_ou_nif }}</b>".</p>
+        </div>
+        {% endif %}
+
+    </div>
+    
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/procurar_dador.js' %}"></script>
+</body>
+</html>

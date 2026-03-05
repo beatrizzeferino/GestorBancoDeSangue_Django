@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Pedidos</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+{% if messages %}
+    <div class="mensagens-alerta">
+        {% for message in messages %}
+            <div class="alerta {{ message.tags }}">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+    <header class="glass-header">
+        <div class="user-info">
+            <div class="avatar-small">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>
+                <h2>Consultar Pedidos</h2>
+                <h3>Pedidos de Hospitais</h3>
+            </div>
+        </div>
+
+        <a href="{% if tipo_user == 'ADMIN' %}{% url 'home_admin' %}{% else %}{% url 'home_hospital' %}{% endif %}" class="btn-sair">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </header>
+
+    <!-- TABS -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" onclick="openTab('tabAprovado', this)">
+            <i class="fas fa-check-circle"></i> Aprovados
+            <span class="badge">{{ pedidos_aprovados.count }}</span>
+        </button>
+        <button class="tab-btn" onclick="openTab('tabPendente', this)">
+            <i class="fas fa-clock"></i> Pendentes
+            <span class="badge">{{ pedidos_pendentes.count }}</span>
+        </button>
+        <button class="tab-btn" onclick="openTab('tabRejeitado', this)">
+            <i class="fas fa-times-circle"></i> Rejeitados
+            <span class="badge">{{ pedidos_rejeitados.count }}</span>
+        </button>
+    </div>
+
+    <!-- TABELA APROVADOS -->
+    <div id="tabAprovado" class="tab-content active-content glass-panel">
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Hospital</th>
+                    <th>Tipo Sangue</th>
+                    <th>Componente</th>
+                    <th>Quantidade</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos_aprovados %}
+                <tr>
+                    <td>{{ pedido.dataPedido|date:"d/m/Y" }}</td>
+                    <td>
+                        <b>{{ pedido.hospital.nome }}</b><br>
+                        <span style="font-size:0.8rem;opacity:0.7">{{ pedido.hospital.cidade }}</span>
+                    </td>
+                    <td><span class="badge">{{ pedido.tipo_sangue }}</span></td>
+                    <td><span class="badge">{{ pedido.get_componente_display }}</span></td>
+                    <td>{{ pedido.quantidade }} ml</td>
+                    <td>
+                        <span class="estado estado-aprovado">{{ pedido.get_estadoPedido_display }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">Nenhum pedido aprovado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TABELA PENDENTES -->
+    <div id="tabPendente" class="tab-content glass-panel" style="display:none;">
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Hospital</th>
+                    <th>Tipo Sangue</th>
+                    <th>Componente</th>
+                    <th>Quantidade</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos_pendentes %}
+                <tr>
+                    <td>{{ pedido.dataPedido|date:"d/m/Y" }}</td>
+                    <td>
+                        <b>{{ pedido.hospital.nome }}</b><br>
+                        <span style="font-size:0.8rem;opacity:0.7">{{ pedido.hospital.cidade }}</span>
+                    </td>
+                    <td><span class="badge">{{ pedido.tipo_sangue }}</span></td>
+                    <td><span class="badge">{{ pedido.get_componente_display }}</span></td>
+                    <td>{{ pedido.quantidade }} ml</td>
+                    <td>
+                        <span class="estado estado-pendente">{{ pedido.get_estadoPedido_display }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">Nenhum pedido pendente.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TABELA REJEITADOS -->
+    <div id="tabRejeitado" class="tab-content glass-panel" style="display:none;">
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Hospital</th>
+                    <th>Tipo Sangue</th>
+                    <th>Componente</th>
+                    <th>Quantidade</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos_rejeitados %}
+                <tr>
+                    <td>{{ pedido.dataPedido|date:"d/m/Y" }}</td>
+                    <td>
+                        <b>{{ pedido.hospital.nome }}</b><br>
+                        <span style="font-size:0.8rem;opacity:0.7">{{ pedido.hospital.cidade }}</span>
+                    </td>
+                    <td><span class="badge">{{ pedido.tipo_sangue }}</span></td>
+                    <td><span class="badge">{{ pedido.get_componente_display }}</span></td>
+                    <td>{{ pedido.quantidade }} ml</td>
+                    <td>
+                        <span class="estado estado-rejeitado">{{ pedido.get_estadoPedido_display }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-message">Nenhum pedido rejeitado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- script -->
+<script src="{% static 'js/consultar_pedidos.js' %}"></script>
+
+</body>
+</html>

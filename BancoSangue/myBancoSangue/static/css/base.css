@@ -1,0 +1,74 @@
+/* static/css/base.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* --- RESET & BODY --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #c06c84 100%);
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.dashboard-container { width: 90%; max-width: 1000px; margin: 20px; }
+
+/* --- ALERTAS & MENSAGENS --- */
+.mensagens-alerta {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 9999; width: 90%; max-width: 450px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.alerta {
+    padding: 15px 20px; border-radius: 12px; color: #fff; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: slideDown 0.5s ease-out forwards;
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+}
+.success { background-color: rgba(46, 204, 113, 0.95); border: 1px solid #27ae60; }
+.error, .danger { background-color: rgba(231, 76, 60, 0.95); border: 1px solid #c0392b; }
+.warning { background-color: rgba(241, 196, 15, 0.95); border: 1px solid #f39c12; }
+.info { background-color: rgba(52, 152, 219, 0.95); border: 1px solid #2980b9; }
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- HEADER & USER INFO --- */
+.glass-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2); color: white;
+    padding: 20px 30px; display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 30px;
+}
+.user-info { display: flex; align-items: center; gap: 15px; }
+.user-info h2 { font-size: 14px; opacity: 0.8; font-weight: normal; margin: 0; color: white;}
+.user-info h3 { font-size: 20px; font-weight: bold; margin: 0; color: white;}
+.avatar-small {
+    width: 50px; height: 50px; background: rgba(255,255,255,0.2);
+    border-radius: 50%; display: flex; justify-content: center;
+    align-items: center; font-size: 24px; color: white;
+}
+.btn-sair {
+    background: rgba(255, 0, 0, 0.2); border: 1px solid rgba(255, 0, 0, 0.3);
+    color: white; padding: 10px 20px; border-radius: 15px; transition: 0.3s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: bold;
+}
+.btn-sair:hover { background: rgba(255, 0, 0, 0.4); transform: scale(1.05); }
+
+/* --- CLASSE GENÉRICA DE VIDRO (CARD-OPCAO) --- */
+.card-opcao {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2); color: white;
+    padding: 30px; text-align: center;
+}
