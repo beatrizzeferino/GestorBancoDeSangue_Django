@@ -9,7 +9,7 @@ O sistema foi desenvolvido utilizando o **framework Django**, seguindo uma arqui
 
 Este projeto corresponde à **segunda parte do trabalho**, sendo uma evolução da primeira versão do sistema desenvolvida em **Java com RMI**.  
 A versão distribuída em Java pode ser consultada aqui:  
-👉 *[link para o repositório Java]*
+(https://github.com/beatrizzeferino/GestorBancoDeSangue-RMI)
 
 ---
 
