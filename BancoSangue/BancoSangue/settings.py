@@ -134,4 +134,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login' #se tentar aceder a uma pagina que nao tem acesso envia para a pagina de login
 
-ALLOWED_HOSTS = ['*'] 
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
