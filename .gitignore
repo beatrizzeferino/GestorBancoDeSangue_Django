@@ -12,3 +12,5 @@ db.sqlite3
 # Arquivos temporários ou imagens PUML
 BancoSangue/PUML/*.png
 *.txt
+
+.env
